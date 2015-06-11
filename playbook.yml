@@ -1,1 +1,7 @@
-
+-host:leaf
+ user:cumulus
+ roles:
+ - common
+ - ospf
+handlers:
+- include: handlers/main.yml
