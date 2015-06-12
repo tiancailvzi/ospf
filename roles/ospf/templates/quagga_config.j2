@@ -1,1 +1,27 @@
+{% set switch = interfaces[ansible_hostname] -%}
+
+{% if switch.loopback is defined -%}
+
+ospf router-id {{ switch.loopback }}
+redistribute connected
+network {{ switch.loopback }}/32 area 0.0.0.0
+
+{% end if -%}
+
+{% if switch.bonds is defined -%}
+{% for bondname in switch.bonds -%}
+  network {{ switch.bonds[bondname].address }} area 0.0.0.0
+{% end for -%}
+{% end if -%}
+
+!
+
+{% if switch.bonds is defined -%}
+{% for bondname in switch.bonds -%}
+  interface {{ bondname }}
+   ip ospf network point-to-point
+   linkdetect
+{% end for -%}
+{% end if -%}
+ !
 
