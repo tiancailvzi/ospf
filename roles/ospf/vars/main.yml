@@ -12,6 +12,7 @@
    vlan_aware:
     name: "bridge"
     pvid: "1"
+    vids: "100 200"
     members: ["swp3","swp4","swp5"]
     svi:
      bridge.100:
@@ -32,6 +33,7 @@
    vlan_aware:
     name: "bridge"
     pvid: "1"
+    vids: "100 200"
     members: ["swp3","swp4","swp5"]
     svi:
      bridge.200:
