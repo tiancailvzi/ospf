@@ -3,14 +3,14 @@
 auto lo
 iface lo inet loopback
 {% if swith.loopback is defined -%}
-  address {{switch.lopback}}/32
+  address {{ switch.lopback }}/32
 {% end if-%}
 
 {% if swith.int_num is defined -%}
  {% for intterface in switch.int_num -%}
  
- auto {{interface}}
- iface {{interface}}
+ auto {{ interface }}
+ iface {{ interface }}
  
  {% end for -%}
  {% end if -%}
@@ -18,8 +18,8 @@ iface lo inet loopback
  {% if swith.bridge is defined -%}
  {% for intterface in switch.bridge.vlan_aware.members -%}
  
- auto {{interface}}
- iface {{interface}}
+ auto {{ interface }}
+ iface {{ interface }}
  
  {% end for -%}
  {% end if -%}
@@ -28,8 +28,8 @@ iface lo inet loopback
 {% if swith.bond is defined -%}
  {% for bond_name in switch.bonds -%}
  
- auto {{bond_name}}
- iface {{bond_name}}
+ auto {{ bond_name }}
+ iface {{ bond_name }}
   address {{ switch.bonds[bond_name].address }}
   bond-slaves {{ switch.bonds[bond_name].members|join(' ') }}
   bond-mode 802.3ad
@@ -44,10 +44,22 @@ iface lo inet loopback
  {% if swith.bridges is defined -%}
  
  auto {{ switch.bridges.vlan_aware.name }}
- iface {{ switch.bridges.vlan_aware.name}}
+ iface {{ switch.bridges.vlan_aware.name }}
   bridge-vlan-aware yes
   bridge-ports {{ switch.bridges.vlan_aware.members\join(' ') }}
-  bridge-vids 100 200
-  bridge-pvid 1
+  bridge-vids {{ switch.bridges.vids }}
+  bridge-pvid {{ switch.bridges.pvid }}
   bridge-stp on
+  
+  {% if switch.bridges.vlan_aware.svi is defined -%}
+  (% for name in switch.bridges.vlan_aware.svi -%}
+  
+  auto {{ name }}
+  iface{{ name }}
+   address {{ switch.bridges.vlan_aware.svi[name].ip }}
+  
+  {% endfor -%}
+  {% endif -%}
+  {% endif -%}
+  
  
