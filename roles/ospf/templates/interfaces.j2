@@ -1,1 +1,53 @@
+{% set switch = interfaces[ansible_hostname] -%}
 
+auto lo
+iface lo inet loopback
+{% if swith.loopback is defined -%}
+  address {{switch.lopback}}/32
+{% end if-%}
+
+{% if swith.int_num is defined -%}
+ {% for intterface in switch.int_num -%}
+ 
+ auto {{interface}}
+ iface {{interface}}
+ 
+ {% end for -%}
+ {% end if -%}
+ 
+ {% if swith.bridge is defined -%}
+ {% for intterface in switch.bridge.vlan_aware.members -%}
+ 
+ auto {{interface}}
+ iface {{interface}}
+ 
+ {% end for -%}
+ {% end if -%}
+
+
+{% if swith.bond is defined -%}
+ {% for bond_name in switch.bonds -%}
+ 
+ auto {{bond_name}}
+ iface {{bond_name}}
+  address {{ switch.bonds[bond_name].address }}
+  bond-slaves {{ switch.bonds[bond_name].members|join(' ') }}
+  bond-mode 802.3ad
+  bond-miimon 100
+  bond-lacp-rate 1
+  bond-min-links 1
+  bond-xmit-hash-policy layer3+4
+ 
+ {% end for -%}
+ {% end if -%}
+ 
+ {% if swith.bridges is defined -%}
+ 
+ auto {{ switch.bridges.vlan_aware.name }}
+ iface {{ switch.bridges.vlan_aware.name}}
+  bridge-vlan-aware yes
+  bridge-ports {{ switch.bridges.vlan_aware.members\join(' ') }}
+  bridge-vids 100 200
+  bridge-pvid 1
+  bridge-stp on
+ 
