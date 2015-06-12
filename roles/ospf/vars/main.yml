@@ -34,5 +34,5 @@
     pvid: "1"
     members: ["swp3","swp4","swp5"]
     svi:
-     bridge.100:
+     bridge.200:
       ip: "192.168.203.1/24"
